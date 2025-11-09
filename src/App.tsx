@@ -9,10 +9,10 @@ function App() {
     <div className="w-full min-h-screen bg-gradient-to-r from-blue-500 to-purple-500">
       <div className="max-w-5xl mx-auto p-8 text-center">
         <div className="flex justify-center gap-8">
-          <a href="https://vite.dev" target="_blank" className="hover:drop-shadow-[0_0_2em_#646cffaa]">
+          <a href="https://vite.dev" target="_blank" rel="noreferrer" className="hover:drop-shadow-[0_0_2em_#646cffaa]">
             <img src={viteLogo} className="h-24 p-6 transition-all" alt="Vite logo" />
           </a>
-          <a href="https://react.dev" target="_blank" className="hover:drop-shadow-[0_0_2em_#61dafbaa]">
+          <a href="https://react.dev" target="_blank" rel="noreferrer" className="hover:drop-shadow-[0_0_2em_#61dafbaa]">
             <img src={reactLogo} className="h-24 p-6 transition-all animate-[spin_20s_linear_infinite]" alt="React logo" />
           </a>
         </div>
