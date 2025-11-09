@@ -1,0 +1,22 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:5173",
+      "localStorage": [
+        {
+          "name": "e2e_posts",
+          "value": "[{\"id\":\"e2e-seed-1762729255981\",\"title\":\"E2E Seed Post\",\"body\":\"# Seeded Test Content\\\\n\\\\nThis post is seeded for e2e tests.\",\"createdAt\":\"2025-11-09T23:00:55.981Z\",\"updatedAt\":\"2025-11-09T23:00:55.983Z\",\"authorId\":\"e2e-user\"}]"
+        },
+        {
+          "name": "e2e_last_created",
+          "value": "e2e-seed-1762729255981"
+        },
+        {
+          "name": "e2e_mode",
+          "value": "1"
+        }
+      ]
+    }
+  ]
+}

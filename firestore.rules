@@ -1,0 +1,25 @@
+// Firestore security rules - starter template
+// IMPORTANT: Review and adjust these rules for your app's security requirements before production.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Posts collection: published posts are readable by anyone; drafts only by owner
+    match /posts/{postId} {
+      allow read: if (resource.data.isPublished == true) ||
+                   (request.auth != null && request.auth.uid == resource.data.authorId);
+
+      allow create: if request.auth != null
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.title is string
+                    && request.resource.data.body is string;
+
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.authorId;
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read, create, update: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

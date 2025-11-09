@@ -1,0 +1,14 @@
+// Firebase Storage rules - starter template
+// Allow authenticated users to upload images into `posts/{postId}` folder and only read them.
+
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /posts/{postId}/{allPaths=**} {
+      // Allow public read for images, but writes only from authenticated users and with a reasonable size limit
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.resource.size < 5 * 1024 * 1024; // <5MB
+    }
+  }
+}

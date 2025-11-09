@@ -1,39 +1,89 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
+import { useAuth } from './contexts/AuthContext';
+import ErrorBoundary from './components/ErrorBoundary';
+
+// Lazy load components
+const LoginPage = lazy(() => import('./pages/login'));
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
+const PostView = lazy(() => import('./pages/PostView'));
+const NewPost = lazy(() => import('./pages/NewPost'));
+const EditPost = lazy(() => import('./pages/EditPost'));
+// Note: BlogPost is loaded via page-level wrappers (NewPost/EditPost)
+
+// Protected route component
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+// Admin-only route
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== 'admin') return <Navigate to="/" replace />;
+
+  return <>{children}</>;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="w-full min-h-screen bg-gradient-to-r from-blue-500 to-purple-500">
-      <div className="max-w-5xl mx-auto p-8 text-center">
-        <div className="flex justify-center gap-8">
-          <a href="https://vite.dev" target="_blank" rel="noreferrer" className="hover:drop-shadow-[0_0_2em_#646cffaa]">
-            <img src={viteLogo} className="h-24 p-6 transition-all" alt="Vite logo" />
-          </a>
-          <a href="https://react.dev" target="_blank" rel="noreferrer" className="hover:drop-shadow-[0_0_2em_#61dafbaa]">
-            <img src={reactLogo} className="h-24 p-6 transition-all animate-[spin_20s_linear_infinite]" alt="React logo" />
-          </a>
-        </div>
-        <h1 className="text-4xl font-bold my-8">Vite + React</h1>
-        <div className="p-8">
-          <button 
-            onClick={() => setCount((count) => count + 1)}
-            className="rounded-lg border border-transparent px-5 py-2.5 bg-[#1a1a1a] cursor-pointer transition-colors hover:border-[#646cff] focus:outline-none focus:ring-4"
-          >
-            count is {count}
-          </button>
-          <p className="mt-4">
-            Edit <code className="font-mono bg-gray-700/30 rounded px-2 py-1">src/App.tsx</code> and save to test HMR
-          </p>
-        </div>
-        <p className="text-gray-400">
-          Click on the Vite and React logos to learn more
-        </p>
-      </div>
-    </div>
-  )
+    <ErrorBoundary>
+      <Router>
+        <AuthProvider>
+          <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-grow bg-gray-50">
+              <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+                <Routes>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route 
+                    path="/new" 
+                    element={
+                      <AdminRoute>
+                        <NewPost />
+                      </AdminRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/edit/:id" 
+                    element={
+                      <ProtectedRoute>
+                        <EditPost />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route path="/posts/:id" element={<PostView />} />
+                  <Route path="/" element={<Home />} />
+                </Routes>
+              </Suspense>
+            </main>
+            <Footer />
+          </div>
+        </AuthProvider>
+      </Router>
+    </ErrorBoundary>
+  );
 }
 
-export default App
+export default App;
