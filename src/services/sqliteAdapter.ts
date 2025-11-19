@@ -41,7 +41,8 @@ class SQLiteAdapter {
         } else {
           this.memoryPosts = [];
         }
-      } catch (e) {
+      } catch (_e) {
+        // Failed to parse saved posts, start fresh
         this.memoryPosts = [];
       }
       this.initialized = true;
@@ -169,7 +170,11 @@ class SQLiteAdapter {
         synced: false
       };
       this.memoryPosts.push(newPost);
-      try { localStorage.setItem('blog_database_json', JSON.stringify(this.memoryPosts)); } catch {}
+      try { 
+        localStorage.setItem('blog_database_json', JSON.stringify(this.memoryPosts)); 
+      } catch (_e) {
+        console.warn('Failed to save to localStorage');
+      }
       return newPost;
     }
 
@@ -204,7 +209,11 @@ class SQLiteAdapter {
       const now = Date.now();
       if (idx >= 0) {
         this.memoryPosts[idx] = { ...post, updatedAt: now, synced: false };
-        try { localStorage.setItem('blog_database_json', JSON.stringify(this.memoryPosts)); } catch {}
+        try { 
+          localStorage.setItem('blog_database_json', JSON.stringify(this.memoryPosts)); 
+        } catch (_e) {
+          console.warn('Failed to save to localStorage');
+        }
         return this.memoryPosts[idx];
       }
       throw new Error('Post not found');
@@ -229,7 +238,11 @@ class SQLiteAdapter {
     await this.initialize();
     if (this.useMemory) {
       this.memoryPosts = this.memoryPosts.filter(p => p.id !== id);
-      try { localStorage.setItem('blog_database_json', JSON.stringify(this.memoryPosts)); } catch {}
+      try { 
+        localStorage.setItem('blog_database_json', JSON.stringify(this.memoryPosts)); 
+      } catch (_e) {
+        console.warn('Failed to save to localStorage');
+      }
       return;
     }
 
@@ -279,7 +292,11 @@ class SQLiteAdapter {
     if (this.useMemory) {
       const idx = this.memoryPosts.findIndex(p => p.id === id);
       if (idx >= 0) this.memoryPosts[idx].synced = true;
-      try { localStorage.setItem('blog_database_json', JSON.stringify(this.memoryPosts)); } catch {}
+      try { 
+        localStorage.setItem('blog_database_json', JSON.stringify(this.memoryPosts)); 
+      } catch (_e) {
+        console.warn('Failed to save to localStorage');
+      }
       return;
     }
 

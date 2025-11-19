@@ -21,8 +21,8 @@ setup('authenticate', async ({ page }) => {
         localStorage.setItem('e2e_posts', JSON.stringify([post]));
         localStorage.setItem('e2e_last_created', id);
       }
-    } catch (e) {
-      // ignore
+    } catch (_e) {
+      // E2E setup failed, tests will handle
     }
   });
 

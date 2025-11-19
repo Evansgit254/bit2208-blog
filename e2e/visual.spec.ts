@@ -1,14 +1,21 @@
 import { test, expect } from '@playwright/test';
 
+// Type for document with fonts API
+type DocumentWithFonts = Document & { fonts?: { ready: Promise<void> } };
+
 test.describe('Visual Regression Tests', () => {
   test('home page layout', async ({ page }) => {
     // Ensure deterministic rendering: set e2e mode and wait for fonts/network
     await page.addInitScript(() => {
-      try { localStorage.setItem('e2e_mode', '1'); } catch (e) {}
+      try { 
+        localStorage.setItem('e2e_mode', '1'); 
+      } catch (_e) {
+        // localStorage not available
+      }
     });
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    await page.evaluate(() => (document as any).fonts?.ready);
+    await page.evaluate(() => (document as DocumentWithFonts).fonts?.ready);
     // Small stabilization pause for layout
     await page.waitForTimeout(200);
     await expect(page).toHaveScreenshot('home-page.png', {
@@ -40,7 +47,7 @@ test.describe('Visual Regression Tests', () => {
     
     // Take screenshot of empty form after stabilizing
     await page.waitForLoadState('networkidle');
-    await page.evaluate(() => (document as any).fonts?.ready);
+    await page.evaluate(() => (document as DocumentWithFonts).fonts?.ready);
     await page.waitForTimeout(200);
     await expect(page).toHaveScreenshot('create-post-page.png', {
       mask: [page.locator('.markdown-editor')], // Mask editor as it may have different cursor positions
@@ -73,7 +80,7 @@ test.describe('Visual Regression Tests', () => {
       // Home page
       await page.goto('/');
       await page.waitForLoadState('networkidle');
-      await page.evaluate(() => (document as any).fonts?.ready);
+      await page.evaluate(() => (document as DocumentWithFonts).fonts?.ready);
       await page.waitForTimeout(200);
       const maxDiff = viewport.width <= 375 ? 0.06 : 0.02;
       await expect(page).toHaveScreenshot(`home-page-${viewport.width}x${viewport.height}.png`, {

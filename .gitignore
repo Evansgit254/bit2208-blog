@@ -32,3 +32,15 @@ dist-ssr
 # Firebase
 .firebase/
 *.cache
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
+
+# Test results
+test-results/
+playwright-report/
+
+# Logs
+firestore-debug.log
+ui-debug.log
+database-debug.log
+pubsub-debug.log

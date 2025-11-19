@@ -1,10 +1,28 @@
 {
   "name": "bit2208-blog",
+  "version": "1.0.0",
+  "description": "A modern, offline-first blog application built with React, TypeScript, and Firebase",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "author": "Evans",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "typescript",
+    "firebase",
+    "blog",
+    "offline-first",
+    "pwa",
+    "vite",
+    "tailwindcss"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/bit2208-blog"
+  },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "scripts": {
     "dev": "vite",
@@ -21,6 +39,7 @@
     "emulators:stop": "kill $(lsof -t -i:9099,8080,9199,4000) 2>/dev/null || true"
   },
   "dependencies": {
+    "@dataconnect/generated": "file:src/dataconnect-generated",
     "firebase": "^12.5.0",
     "lucide-react": "^0.553.0",
     "react": "^18.2.0",

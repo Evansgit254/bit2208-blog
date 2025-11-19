@@ -19,7 +19,8 @@ class SyncService {
   private isE2EMode(): boolean {
     try {
       return typeof window !== 'undefined' && !!localStorage.getItem('e2e_mode');
-    } catch (e) {
+    } catch (_e) {
+      // localStorage not available
       return false;
     }
   }
@@ -120,18 +121,22 @@ class SyncService {
       // Also write a JSON fallback used by sqliteAdapter in-memory path
       try {
         localStorage.setItem('blog_database_json', JSON.stringify(posts));
-      } catch (e) {
-        // ignore
+      } catch (_e) {
+        // localStorage not available
       }
       // Expose last created id to help tests and dispatch an event
       try {
         localStorage.setItem('e2e_last_created', newPost.id);
         window.dispatchEvent(new CustomEvent('e2e:post-created', { detail: { id: newPost.id } }));
-      } catch (e) {
-        // ignore
+      } catch (_e) {
+        // Event dispatch failed
       }
       // Helpful debug during E2E runs
-      try { console.log('[syncService][e2e] created post', newPost.id); } catch {}
+      try { 
+        console.log('[syncService][e2e] created post', newPost.id); 
+      } catch (_e) {
+        // Console not available
+      }
       return newPost;
     }
 

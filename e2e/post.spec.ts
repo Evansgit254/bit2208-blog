@@ -63,7 +63,11 @@ test.describe('Blog Post Management', () => {
       localStorage.setItem('e2e_posts', JSON.stringify(existing));
       localStorage.setItem('e2e_last_created', id);
       // Mirror into blog_database_json so sqlite fallback can observe it if needed
-      try { localStorage.setItem('blog_database_json', JSON.stringify(existing)); } catch (e) {}
+      try { 
+        localStorage.setItem('blog_database_json', JSON.stringify(existing)); 
+      } catch (_e) {
+        // localStorage not available
+      }
       // Dispatch an event the app might listen for
       window.dispatchEvent(new CustomEvent('e2e:post-created', { detail: post }));
       return { id, title: uniqueTitle };
